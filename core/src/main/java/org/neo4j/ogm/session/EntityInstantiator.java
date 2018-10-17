@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017 "Neo Technology,"
+ * Copyright (c) 2002-2018 "Neo Technology,"
  * Network Engine for Objects in Lund AB [http://neotechnology.com]
  *
  * This product is licensed to you under the Apache License, Version 2.0 (the "License").
@@ -19,6 +19,10 @@ import java.util.Map;
  * Interface to be implemented to override entity instances creation.
  * This is mainly designed for SDN, Spring data commons having some infrastructure code to do fancy
  * object instantiation using persistence constructors and ASM low level bytecode generation.
+ *
+ * @author Nicolas Mervaillie
+ * @author Michael J. Simons
+ * @since 3.1
  */
 public interface EntityInstantiator {
 
@@ -31,4 +35,16 @@ public interface EntityInstantiator {
      * @return The created instance.
      */
     <T> T createInstance(Class<T> clazz, Map<String, Object> propertyValues);
+
+    /**
+     * This methods shall return true if an instance of a class instantiated by this instantiator needs
+     * further population after instantiation.
+     *
+     * @param clazz The class that is checked whether it requires further population or not after being instantiated
+     * @return true by default
+     * @since 3.1.5
+     */
+    default <T> boolean needsFurtherPopulation(Class<T> clazz, T instance) {
+        return true;
+    }
 }
