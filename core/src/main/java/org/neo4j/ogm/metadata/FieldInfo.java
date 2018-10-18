@@ -13,6 +13,8 @@
 
 package org.neo4j.ogm.metadata;
 
+import static org.neo4j.ogm.metadata.DefaultFieldConversions.applyFieldConversionOrCoerceIfNecessary;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -367,7 +369,7 @@ public class FieldInfo {
 
     public void write(Object instance, Object value) {
 
-        write(field, instance, FieldTransformations.applyFieldConversionOrCoerceIfNecessary(this, value));
+        writeDirect(instance, applyFieldConversionOrCoerceIfNecessary(this).apply(value));
     }
 
     /**
