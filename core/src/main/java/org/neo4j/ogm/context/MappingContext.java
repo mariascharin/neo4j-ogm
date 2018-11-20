@@ -145,9 +145,10 @@ public class MappingContext {
      */
     public Object addNodeEntity(Object entity, Long id) {
 
-        ClassInfo classInfo = metaData.classInfo(entity);
 
         if (nodeEntityRegister.putIfAbsent(id, entity) == null) {
+            ClassInfo classInfo = metaData.classInfo(entity);
+
             remember(entity);
             final Object primaryIndexValue = classInfo.readPrimaryIndexValueOf(entity);
             if (primaryIndexValue != null) {
