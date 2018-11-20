@@ -145,7 +145,6 @@ public class MappingContext {
      */
     public Object addNodeEntity(Object entity, Long id) {
 
-
         if (nodeEntityRegister.putIfAbsent(id, entity) == null) {
             ClassInfo classInfo = metaData.classInfo(entity);
 
@@ -187,6 +186,26 @@ public class MappingContext {
         if (deregisterDependentRelationshipEntity) {
             deregisterDependentRelationshipEntity(entity);
         }
+    }
+
+    /**
+     * This is an improved version of calling
+     * <pre>
+     *     mappingContext.removeNodeEntity(instance, false);
+     *     mappingContext.addNodeEntity(instance);
+     * </pre>
+     * @param entity
+     * @param identity
+     */
+    void updateNodeEntity(Object entity, Long identity) {
+        nodeEntityRegister.remove(identity);
+        final ClassInfo classInfo = metaData.classInfo(entity);
+        final Object primaryIndexValue = classInfo.readPrimaryIndexValueOf(entity);
+        if (primaryIndexValue != null) {
+            primaryIndexNodeRegister.remove(new LabelPrimaryId(classInfo, primaryIndexValue));
+        }
+
+        this.addNodeEntity(entity, identity);
     }
 
     public void replaceNodeEntity(Object entity, Long identity) {
